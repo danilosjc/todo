@@ -12,7 +12,7 @@ const users = [];
 
 function checksExistsUserAccount(request, response, next) {
   const { username } = request.headers;
-  console.log('request.body', request.headers)
+
 
   const usuario = users.find(user => user.username === username);
   
@@ -57,7 +57,25 @@ app.get('/todos', checksExistsUserAccount, (request, response) => {
 });
 
 app.post('/todos', checksExistsUserAccount, (request, response) => {
-  // Complete aqui
+  
+  const { usuario } = request
+
+  const { title, deadline } = request.body
+
+  const { username } = request.headers
+
+  const tarefas = {
+      id: uuidv4(),
+	    title,
+	    done: false, 
+	    deadline: new Date(deadline), 
+	    created_at: new Date()
+     }
+
+  usuario.todo.push(tarefas)
+
+  return response.json(usuario.todo)
+  
 });
 
 app.put('/todos/:id', checksExistsUserAccount, (request, response) => {
