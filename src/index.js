@@ -120,7 +120,12 @@ app.delete('/todos/:id', checksExistsUserAccount, (request, response) => {
 
   const { id } = request.params
 
-  usuario.todo.splice(0)
+  const index = usuario.todo.findIndex(todo => todo.id === id)
+
+  if(index == -1)
+    return response.status(404).json({Erro:"Id não encontrado"})
+
+  usuario.todo.splice(index, 1)
 
   return response.status(200).json(users)
 
