@@ -62,9 +62,7 @@ app.post('/todos', checksExistsUserAccount, (request, response) => {
 
   const { title, deadline } = request.body
 
-  const { username } = request.headers
-
-  const tarefas = {
+  const tarefa = {
       id: uuidv4(),
 	    title,
 	    done: false, 
@@ -72,22 +70,60 @@ app.post('/todos', checksExistsUserAccount, (request, response) => {
 	    created_at: new Date()
      }
 
-  usuario.todo.push(tarefas)
+  usuario.todo.push(tarefa)
 
   return response.json(usuario.todo)
   
 });
 
 app.put('/todos/:id', checksExistsUserAccount, (request, response) => {
-  // Complete aqui
+  
+  const { usuario } = request
+  
+  const { id } = request.params
+ 
+  const { title, deadline } = request.body
+
+  const item = usuario.todo.find(item => item.id === id)
+
+  if (!item)
+    return response.status(404).json({Erro: "tarefa não existe"})
+
+  item.title = title
+  item.deadline = deadline
+
+  return response.status(201).send()
 });
 
 app.patch('/todos/:id/done', checksExistsUserAccount, (request, response) => {
-  // Complete aqui
+  
+  const { usuario } = request
+
+  const { id } = request.params
+
+  const item = usuario.todo.find(item => item.id === id)
+
+  if(!item)
+    return response.status(404).json({Erro: "tarefa não existe"})
+
+  item.done = true
+
+  console.log("item", item.done)
+
+  return response.status(201).send()
+
 });
 
 app.delete('/todos/:id', checksExistsUserAccount, (request, response) => {
-  // Complete aqui
+  
+  const { usuario } = request
+
+  const { id } = request.params
+
+  usuario.todo.splice(0)
+
+  return response.status(200).json(users)
+
 });
 
 module.exports = app;
