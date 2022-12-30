@@ -38,21 +38,21 @@ app.post('/users', (request, response) => {
         {Erro: "Usuário já cadastrado"})
     };
 
-    users.push({
+    const user = users.push({
       id: uuidv4(),
       name,
       username,
-      todo: []
+      todos: []
     });
 
-    return response.json(users);
+    return response.status(201).json(user);
 });
 
 app.get('/todos', checksExistsUserAccount, (request, response) => {
 
   const { usuario } = request
 
-  return response.json(usuario.todo)
+  return response.json(usuario.todos)
   
 });
 
@@ -70,9 +70,9 @@ app.post('/todos', checksExistsUserAccount, (request, response) => {
 	    created_at: new Date()
      }
 
-  usuario.todo.push(tarefa)
+  usuario.todos.push(tarefa)
 
-  return response.json(usuario.todo)
+  return response.json(usuario.todos)
   
 });
 
@@ -84,7 +84,7 @@ app.put('/todos/:id', checksExistsUserAccount, (request, response) => {
  
   const { title, deadline } = request.body
 
-  const item = usuario.todo.find(item => item.id === id)
+  const item = usuario.todos.find(item => item.id === id)
 
   if (!item)
     return response.status(404).json({Erro: "tarefa não existe"})
@@ -101,7 +101,7 @@ app.patch('/todos/:id/done', checksExistsUserAccount, (request, response) => {
 
   const { id } = request.params
 
-  const item = usuario.todo.find(item => item.id === id)
+  const item = usuario.todos.find(item => item.id === id)
 
   if(!item)
     return response.status(404).json({Erro: "tarefa não existe"})
@@ -120,16 +120,15 @@ app.delete('/todos/:id', checksExistsUserAccount, (request, response) => {
 
   const { id } = request.params
 
-  const index = usuario.todo.findIndex(todo => todo.id === id)
+  const index = usuario.todos.findIndex(todos => todos.id === id)
 
   if(index == -1)
     return response.status(404).json({Erro:"Id não encontrado"})
 
-  usuario.todo.splice(index, 1)
+  usuario.todos.splice(index, 1)
 
   return response.status(200).json(users)
 
 });
 
 module.exports = app;
-app.listen(3000);
